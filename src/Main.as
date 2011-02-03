@@ -12,6 +12,7 @@ package
 		public function Main()
 		{
 			super(800,600);
+			//FP.console.enable();
 		}
 		
 		override public function init():void

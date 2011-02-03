@@ -1,9 +1,12 @@
 package players
 {
-	import flash.geom.Rectangle;
+	import bullets.*;
+	
+	import flash.geom.*;
 	
 	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
+	import net.flashpunk.Sfx;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.masks.Pixelmask;
@@ -15,8 +18,12 @@ package players
 		protected var g:Spritemap;
 		protected var mMan:Pixelmask;
 		protected var mDog:Pixelmask;
+		protected var dogSnd:Sfx;
 		public function Player()
 		{
+			// Woof woof!
+			dogSnd = new Sfx(C.SFX_WOOF);
+			
 			// Set up our player Spritemap.
 			g = new Spritemap(C.GFX_PLAYER,177,105);
 			g.setFrame(0,0);
@@ -30,6 +37,8 @@ package players
 			mask = mMan;
 			
 			type = C.TYPE_PLAYER;
+			x = 400;
+			y = 300;
 		}
 		
 		override public function update():void
@@ -46,6 +55,8 @@ package players
 			y += my * FP.elapsed * C.SPEED_PLAYER;
 			
 			checkCollision();
+			
+			super.update();
 		}
 		
 		protected function swapHead():void
@@ -55,6 +66,7 @@ package players
 				// We are a man. Must transcend personal being to become own best friend. Must become dog.
 				this.mask = mDog;
 				g.setFrame(1,0);
+				dogSnd.play(V.SfxVolume);
 			}
 			else
 			{
@@ -68,6 +80,11 @@ package players
 		{
 			if(collide(C.TYPE_CLONER,x,y) != null) g.color = 0xff0000;
 			else g.color = 0xffffff;
+		}
+		
+		public function bulletHit(v:Point):void
+		{
+			FP.world.add(new Fetus(x + halfWidth, y + halfHeight, v));
 		}
 	}
 }

@@ -21,8 +21,8 @@ package players
 		public function Cloner()
 		{
 			fireRate = 0;
-			x = 500;
-			y = 200;
+			x = 20;
+			y = 300;
 			g = new Image(C.GFX_CLONER);
 			graphic = g;
 			
@@ -47,6 +47,8 @@ package players
 			fireBullets();
 			
 			checkCollision();
+			
+			super.update();
 		}
 		
 		protected function fireBullets():void
@@ -56,10 +58,10 @@ package players
 			{
 				fireRate -= C.RATE_SHOOT;
 				var v:Point = new Point();
-				v.x = -this.x + V.pPlayer.x;
-				v.y = -this.y + V.pPlayer.y;
+				v.x = -this.x + V.pPlayer.x + V.pPlayer.halfWidth;
+				v.y = -this.y + V.pPlayer.y + V.pPlayer.halfHeight;
 				v.normalize(C.SPEED_BULLET);
-				FP.world.add(new Bullet(x,y,v));
+				FP.world.add(new Bullet(x+halfWidth, y+halfHeight,v));
 			}
 		}
 		
