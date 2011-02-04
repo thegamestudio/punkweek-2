@@ -2,12 +2,13 @@ package players
 {
 	import bullets.*;
 	
+	import enemies.*;
+	
 	import flash.geom.*;
 	
 	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
 	import net.flashpunk.Sfx;
-	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.masks.Pixelmask;
 	import net.flashpunk.utils.Input;
@@ -19,10 +20,14 @@ package players
 		protected var mMan:Pixelmask;
 		protected var mDog:Pixelmask;
 		protected var dogSnd:Sfx;
+		protected var dogHitSnd:Sfx;
+		protected var manHitSnd:Sfx;
 		public function Player()
 		{
 			// Woof woof!
 			dogSnd = new Sfx(C.SFX_WOOF);
+			dogHitSnd = new Sfx(C.SFX_DOGHIT);
+			manHitSnd = new Sfx(C.SFX_MANHIT);
 			
 			// Set up our player Spritemap.
 			g = new Spritemap(C.GFX_PLAYER,177,105);
@@ -66,7 +71,7 @@ package players
 				// We are a man. Must transcend personal being to become own best friend. Must become dog.
 				this.mask = mDog;
 				g.setFrame(1,0);
-				dogSnd.play(V.SfxVolume);
+				V.PlaySfx(dogSnd);
 			}
 			else
 			{
@@ -78,8 +83,20 @@ package players
 		
 		protected function checkCollision():void
 		{
-			if(collide(C.TYPE_CLONER,x,y) != null) g.color = 0xff0000;
-			else g.color = 0xffffff;
+			if(collide(C.TYPE_CLONER,x,y) != null)
+			{
+				V.Friendship -= C.RATE_COLLIDE_DAMAGE * FP.elapsed;
+			}
+			var e:Enemy = Enemy(collide(C.TYPE_ENEMY,x,y));
+			if(e != null)
+			{
+				e.destroy();
+				V.Friendship -= C.DAMAGE_ENEMY;
+				V.Shaker.start(0.2,0.25);
+				
+				if(this.mask == mMan) V.PlaySfx(this.manHitSnd);
+				else V.PlaySfx(this.dogHitSnd);
+			}
 		}
 		
 		public function bulletHit(v:Point):void

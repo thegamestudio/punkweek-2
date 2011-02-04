@@ -4,6 +4,8 @@ package
 	
 	import players.Cloner;
 	import players.Player;
+	
+	import utils.Quake;
 
 	public class V
 	{
@@ -16,9 +18,17 @@ package
 		public static var BabyGiggle:Sfx = new Sfx(C.SFX_BABYGIGGLE);
 		public static var BabyCry:Sfx = new Sfx(C.SFX_BABYCRY);
 		
+		public static var Friendship:Number = 100;
+		
+		public static var Shaker:Quake = new Quake();
+		
 		public static function PlaySfx(sfx:Sfx):void
 		{
-			sfx.play(V.SfxVolume);
+			try
+			{
+				sfx.play(V.SfxVolume);
+			}
+			catch (e:Error) {}
 		}
 	}
 }

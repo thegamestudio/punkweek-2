@@ -24,17 +24,19 @@ package enemies
 		protected var exitSnd:Sfx;
 		public function Enemy(x:int, y:int, v:Point)
 		{
+			super(x, y);
 			// Make our sound.
 			enterSnd = new Sfx(C.SFX_BABYGIGGLE);
 			exitSnd = new Sfx(C.SFX_BABYCRY);
 			if(v==null)
 			{
-				x = FP.screen.width + 50;
-				y = FP.rand(FP.screen.height);
+				this.x = FP.screen.width + 50;
+				this.y = FP.rand(FP.screen.height);
 				this.v = new Point(-300,0);
 			}
 			else
 			{
+				
 				isShoot = true;
 				this.v = v.clone();
 				this.v.normalize(C.SPEED_ENEMY_SHOOT);
@@ -50,12 +52,14 @@ package enemies
 			explosionEmitter.setMotion("explode", 0, 500, 1, 360, -200, -0.5, Ease.quadOut);
 			explosionEmitter.relative = false;
 			
+			type = C.TYPE_ENEMY;
+			
 			amp = Math.random()*800 - 400;
 			g = new Spritemap(C.GFX_BABY_CRY,57,70);
 			g.add("cry",[0,1],4);
 			g.play("cry");
 			graphic = new Graphiclist(g, explosionEmitter);
-			super(x, y);
+			
 		}
 		
 		override public function added():void

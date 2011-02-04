@@ -2,12 +2,13 @@ package players
 {
 	import bullets.Bullet;
 	
+	import enemies.*;
+	
 	import flash.geom.Point;
 	
 	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
-	import net.flashpunk.Graphic;
-	import net.flashpunk.Mask;
+	import net.flashpunk.Sfx;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.masks.Pixelmask;
 	import net.flashpunk.utils.Input;
@@ -18,8 +19,10 @@ package players
 		protected var g:Image;
 		protected var m:Pixelmask;
 		protected var fireRate:Number;
+		protected var hitSnd:Sfx;
 		public function Cloner()
 		{
+			hitSnd = new Sfx(C.SFX_TIGERHIT);
 			fireRate = 0;
 			x = 20;
 			y = 300;
@@ -67,8 +70,14 @@ package players
 		
 		protected function checkCollision():void
 		{
-			//if(collide(C.TYPE_PLAYER,x,y) != null) g.color = 0xff0000;
-			//else g.color = 0xffffff;
+			var e:Enemy = Enemy(collide(C.TYPE_ENEMY,x,y));
+			if(e != null)
+			{
+				e.destroy();
+				V.Friendship -= C.DAMAGE_ENEMY;
+				V.Shaker.start(0.2,0.25);
+				V.PlaySfx(this.hitSnd);
+			}
 		}
 	}
 }
