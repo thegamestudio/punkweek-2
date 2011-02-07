@@ -22,9 +22,12 @@ package enemies
 		protected var explosionEmitter:Emitter;
 		protected var enterSnd:Sfx;
 		protected var exitSnd:Sfx;
+		protected var hp:uint;
 		public function Enemy(x:int, y:int, v:Point)
 		{
 			super(x, y);
+			// Set initial hp.
+			hp = 1;
 			// Make our sound.
 			enterSnd = new Sfx(C.SFX_BABYGIGGLE);
 			exitSnd = new Sfx(C.SFX_BABYCRY);
@@ -104,8 +107,12 @@ package enemies
 			if(f!=null)
 			{
 				// Score increase.
-				f.destroy();
-				explode();
+				hp -= 1;
+				if(hp == 0)
+				{
+					f.destroy();
+					explode();
+				}
 			}
 		}
 		

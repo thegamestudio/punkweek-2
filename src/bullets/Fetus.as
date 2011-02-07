@@ -20,6 +20,7 @@ package bullets
 			setHitbox(32,32,16,16);
 			this.v = v.clone();
 			this.v.normalize(1);
+			layer =-1;
 			this.type = C.TYPE_FETUS;
 		}
 		

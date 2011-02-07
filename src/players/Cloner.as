@@ -31,7 +31,7 @@ package players
 			
 			m = new Pixelmask(C.GFX_CLONER);
 			mask = m;
-			
+			layer = -1;
 			type = C.TYPE_CLONER;
 		}
 		
@@ -48,7 +48,8 @@ package players
 			y += my * FP.elapsed * C.SPEED_CLONER;
 			
 			fireBullets();
-			
+			x = FP.clamp(x,0,FP.width);
+			y = FP.clamp(y,0,FP.height);
 			checkCollision();
 			
 			super.update();
@@ -61,8 +62,8 @@ package players
 			{
 				fireRate -= C.RATE_SHOOT;
 				var v:Point = new Point();
-				v.x = -this.x + V.pPlayer.x + V.pPlayer.halfWidth;
-				v.y = -this.y + V.pPlayer.y + V.pPlayer.halfHeight;
+				v.x = -(this.x+70) + V.pPlayer.x + 80;
+				v.y = -(this.y+50) + V.pPlayer.y + 50;
 				v.normalize(C.SPEED_BULLET);
 				FP.world.add(new Bullet(x+halfWidth, y+halfHeight,v));
 			}
@@ -77,6 +78,10 @@ package players
 				V.Friendship -= C.DAMAGE_ENEMY;
 				V.Shaker.start(0.2,0.25);
 				V.PlaySfx(this.hitSnd);
+			}
+			if(collide("boss",x,y))
+			{
+				V.Friendship -= FP.elapsed * 25;
 			}
 		}
 	}

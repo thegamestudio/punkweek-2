@@ -44,6 +44,7 @@ package players
 			type = C.TYPE_PLAYER;
 			x = 400;
 			y = 300;
+			layer = -1
 		}
 		
 		override public function update():void
@@ -58,7 +59,8 @@ package players
 			
 			x += mx * FP.elapsed * C.SPEED_PLAYER;
 			y += my * FP.elapsed * C.SPEED_PLAYER;
-			
+			x = FP.clamp(x,0,FP.width);
+			y = FP.clamp(y,0,FP.height);
 			checkCollision();
 			
 			super.update();
@@ -87,6 +89,15 @@ package players
 			{
 				V.Friendship -= C.RATE_COLLIDE_DAMAGE * FP.elapsed;
 			}
+			else
+			{
+				var dist:Number = FP.distance(x,y,V.pCloner.x,V.pCloner.y);
+				if(dist < 250)
+				{
+					V.Friendship += FP.elapsed * C.RATE_FRIENDSHIP_GAIN * 95/dist;
+				}
+				V.Friendship = Math.min(V.Friendship, 100);
+			}
 			var e:Enemy = Enemy(collide(C.TYPE_ENEMY,x,y));
 			if(e != null)
 			{
@@ -97,11 +108,26 @@ package players
 				if(this.mask == mMan) V.PlaySfx(this.manHitSnd);
 				else V.PlaySfx(this.dogHitSnd);
 			}
+			if(collide("boss",x,y))
+			{
+				V.Friendship -= FP.elapsed * 25;
+			}
+			
 		}
 		
 		public function bulletHit(v:Point):void
 		{
-			FP.world.add(new Fetus(x + halfWidth, y + halfHeight, v));
+			if(mask == mMan) FP.world.add(new Fetus(x + halfWidth, y + halfHeight, v));
+			else
+			{
+				// We are dog.
+				FP.world.add(new Fetus(x + halfWidth, y + halfHeight, v));
+				FP.world.add(new Fetus(x + halfWidth, y + halfHeight, new Point(-v.x,v.y)));
+				FP.world.add(new Fetus(x + halfWidth, y + halfHeight, new Point(v.x,-v.y)));
+				FP.world.add(new Fetus(x + halfWidth, y + halfHeight, new Point(-v.x,-v.y)));
+				V.Friendship -= 2.5;
+				
+			}
 		}
 	}
 }

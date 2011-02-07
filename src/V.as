@@ -19,8 +19,11 @@ package
 		public static var BabyCry:Sfx = new Sfx(C.SFX_BABYCRY);
 		
 		public static var Friendship:Number = 100;
-		
+		public static var FriendshipRate:Number = 25;
+		public static var BossHit:Sfx = new Sfx(C.SFX_BOSSHIT);
 		public static var Shaker:Quake = new Quake();
+		
+		public static var ShouldSpawn:Boolean = true;
 		
 		public static function PlaySfx(sfx:Sfx):void
 		{
